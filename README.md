@@ -15,7 +15,6 @@ go get -u github.com/gopkgsquad/xpress
 ```
 
 ## Quickstart
-
 ```go
 package main
 
@@ -43,7 +42,6 @@ func main() {
 ## Examples
 
 #### [**Basic Routing**]
-
 ```go
 func main() {
     // Initialize a new xpress router
@@ -73,8 +71,31 @@ func main() {
 
 ```
 
-#### [**Middleware Setup**]
+#### [**Live Reloading**]
+```go
+package main
 
+import "github.com/gopkgsquad/xpress"
+
+func main() {
+    // Initialize a new xpress router
+    router := xpress.NewRouter()
+
+    // Define a route for the GET method on the root path '/'
+    router.HFunc("GET /", func(w http.ResponseWriter, r *http.Request) {})
+
+    srv := &http.Server{
+	Addr:    ":3000",
+	Handler: router,
+    }
+
+    // Start the watcher for live reloading, first parameter is http.Server
+    // and second parameter is frequency to check file changes
+    xpress.NewWatcher(srv, time.Second*2).Start()
+}
+```
+
+#### [**Middleware Setup**]
 ```go
 func LoggerMiddleware(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -116,7 +137,6 @@ func main() {
 ```
 
 ### [**Grouping Routes**]
-
 ```go
 func LoggerMiddleware(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -176,7 +196,6 @@ func main() {
 ```
 
 ### [**Route Registration**]
-
 ```go
 func LoggerMiddleware(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

@@ -1,7 +1,7 @@
 # xpress
 
 <p align="center">
-  xpress is a package built on top of Go standard HTTP package. Designed for easy use and <b>performance</b> in mind.
+  xpress is a package built on top of Go standard HTTP package. Designed for easy use.
 </p>
 
 ## **Attention**

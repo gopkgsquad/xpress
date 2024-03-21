@@ -1,7 +1,7 @@
 # xpress
 
 <p align="center">
-  xpress is a package built on top of Go standard HTTP package. Designed for easy use and <b>performance</b> in mind.
+  xpress is a package built on top of Go standard HTTP package. Designed for easy use.
 </p>
 
 ## **Attention**
@@ -221,27 +221,27 @@ func main() {
             {
 				Method: "POST", Path: "/roles",
 				Handler: func(w http.ResponseWriter, r *http.Request) {},
-				Middleware: []func(http.Handler) http.Handler{m1, m2},
+				Middleware: []func(http.Handler) http.Handler{middleware1, middleware2},
 			},
             {
 				Method: "GET", Path: "/roles",
 				Handler: func(w http.ResponseWriter, r *http.Request) {},
-				Middleware: []func(http.Handler) http.Handler{m1, m2},
+				Middleware: []func(http.Handler) http.Handler{middleware2, middleware2},
 			},
             {
 				Method: "GET", Path: "/roles/{id}",
 				Handler: func(w http.ResponseWriter, r *http.Request) {},
-				Middleware: []func(http.Handler) http.Handler{m1, m2},
+				Middleware: []func(http.Handler) http.Handler{middleware1},
 			},
             {
 				Method: "PUT", Path: "/roles/{id}",
 				Handler: func(w http.ResponseWriter, r *http.Request) {},
-				Middleware: []func(http.Handler) http.Handler{m1, m2},
+				Middleware: []func(http.Handler) http.Handler{middleware2},
 			},
             {
 				Method: "DELETE", Path: "/roles/{id}",
 				Handler: func(w http.ResponseWriter, r *http.Request) {},
-				Middleware: []func(http.Handler) http.Handler{m1, m2},
+				Middleware: []func(http.Handler) http.Handler{middleware2, middleware2},
 			},
         },
 	})

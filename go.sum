@@ -1,4 +1,4 @@
-github.com/gopkgsquad/gloader v1.0.0 h1:rsdnDMND+kg91e3b1Aqy3RsZ9NZfpnCbIcKvWlmttPs=
-github.com/gopkgsquad/gloader v1.0.0/go.mod h1:z0/r236OIJK1QKNGl1/SBu/t585I8fa0jmFjvHTBBHM=
-github.com/gopkgsquad/glogger v1.0.1 h1:0T2K7+KKjE5QJOey+jUd9l8h/DR5Im0ji5HpQJzrA9Q=
-github.com/gopkgsquad/glogger v1.0.1/go.mod h1:m3kKj3HP1yEX9k7nmA9ewGD9nSwWfVTw8ZyoUOdWeDo=
+github.com/gopkgsquad/gloader v1.0.1 h1:ALq5LB2o15ZwWnI/O6kDlsF9x/7BTEgZO1rtv83m3bs=
+github.com/gopkgsquad/gloader v1.0.1/go.mod h1:+SpeswGKQvtU5bxdkqwKAEdH3ppmcrj6shjfrCSFJVY=
+github.com/gopkgsquad/glogger v1.0.2 h1:KkACJQn8HldLNaeym27yz21Fn8haVs0pzK8OvHvmDJg=
+github.com/gopkgsquad/glogger v1.0.2/go.mod h1:m3kKj3HP1yEX9k7nmA9ewGD9nSwWfVTw8ZyoUOdWeDo=

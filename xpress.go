@@ -19,7 +19,7 @@ type Router interface {
 }
 
 func NewWatcher(srv *http.Server, interval time.Duration) *gloader.Watcher {
-	logger := glogger.NewLogger(os.Stdout, glogger.LogLevelInfo)
+	logger := glogger.NewLogger(os.Stdout, glogger.LogLevelInfo, false)
 	return gloader.NewWatcher(srv, interval, logger)
 }
 

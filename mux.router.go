@@ -35,7 +35,7 @@ type MuxRouter struct {
 
 // newMuxRouter creates a new instance of MyRouter
 func newMuxRouter() *MuxRouter {
-	logger := glogger.NewLogger(os.Stdout, glogger.LogLevelInfo)
+	logger := glogger.NewLogger(os.Stdout, glogger.LogLevelInfo, false)
 	return &MuxRouter{
 		mux:    http.NewServeMux(),
 		prefix: "",

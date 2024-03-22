@@ -80,5 +80,5 @@ func (r *MuxRouter) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 func (r *MuxRouter) StartServer(srv *http.Server) {
-	gloader.NewWatcher(srv, time.Second, r.logger)
+	gloader.NewWatcher(srv, time.Second, r.logger).Start()
 }

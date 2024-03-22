@@ -2,6 +2,11 @@ package xpress
 
 import (
 	"net/http"
+	"os"
+	"time"
+
+	"github.com/gopkgsquad/gloader"
+	"github.com/gopkgsquad/glogger"
 )
 
 type Router interface {
@@ -11,6 +16,11 @@ type Router interface {
 
 	Group(string) *MuxRouter
 	StartServer(*http.Server)
+}
+
+func NewWatcher(srv *http.Server, interval time.Duration) *gloader.Watcher {
+	logger := glogger.NewLogger(os.Stdout, glogger.LogLevelInfo)
+	return gloader.NewWatcher(srv, interval, logger)
 }
 
 func NewRouter() *MuxRouter {

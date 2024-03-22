@@ -1,13 +1,16 @@
 package xpress
 
-import "net/http"
+import (
+	"net/http"
+)
 
 type Router interface {
-	HFunc(pattern string, handler http.HandlerFunc)
-	U(middlewares ...func(http.Handler) http.Handler)
-	M(middlewares ...func(http.Handler) http.Handler) Router
+	HFunc(string, http.HandlerFunc)
+	U(...func(http.Handler) http.Handler)
+	M(...func(http.Handler) http.Handler) Router
 
-	Group(prefix string) *MuxRouter
+	Group(string) *MuxRouter
+	StartServer(*http.Server)
 }
 
 func NewRouter() *MuxRouter {

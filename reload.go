@@ -11,6 +11,7 @@ import (
 )
 
 type Watcher struct {
+	firstStart     bool
 	reloadActive   bool
 	SourceDir      string
 	Interval       time.Duration
@@ -22,6 +23,7 @@ type Watcher struct {
 func NewWatcher(server *http.Server, interval time.Duration) *Watcher {
 	sourceDir := GetRootPath()
 	return &Watcher{
+		firstStart:     true,
 		SourceDir:      sourceDir,
 		Interval:       interval,
 		lastCheckTime:  time.Now(),
@@ -32,6 +34,12 @@ func NewWatcher(server *http.Server, interval time.Duration) *Watcher {
 }
 
 func (w *Watcher) Start() {
+	if w.firstStart {
+		go func() {
+			w.firstStart = false
+			w.startServer()
+		}()
+	}
 	log.Println("Waiting for file changes...")
 
 	var mainGoPath string
@@ -100,6 +108,12 @@ func (w *Watcher) reload(mainGoFullPath string) error {
 		return err
 	}
 	return nil
+}
+
+func (w *Watcher) startServer() {
+	if w.server != nil {
+		w.server.ListenAndServe()
+	}
 }
 
 func (w *Watcher) stopServer() {

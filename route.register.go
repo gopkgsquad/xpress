@@ -24,6 +24,6 @@ func RegisterRoutes(modules []Module, router *MuxRouter) {
 	}
 }
 
-func registerRoute(pattern string, route Route, router Router) {
+func registerRoute(pattern string, route Route, router IRouter) {
 	router.M(route.Middleware...).HFunc(pattern, route.Handler)
 }

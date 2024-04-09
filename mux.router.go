@@ -2,44 +2,31 @@ package xpress
 
 import (
 	"fmt"
+	"net"
 	"net/http"
-	"os"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/gopkgsquad/gloader"
-	"github.com/gopkgsquad/glogger"
 )
 
-// ANSI color escape codes
-const (
-	ColorRed     = "\033[31m"
-	ColorGreen   = "\033[32m"
-	ColorYellow  = "\033[33m"
-	ColorBlue    = "\033[34m"
-	ColorReset   = "\033[0m"
-	ColorMagenta = "\033[35m"
-	ColorCyan    = "\033[36m"
-)
-
-var _ Router = &MuxRouter{}
+var _ IRouter = &MuxRouter{}
 
 // MuxRouter implements the Router interface
 type MuxRouter struct {
 	mux         *http.ServeMux
 	middlewares []func(http.Handler) http.Handler
 	prefix      string
-	logger      *glogger.Logger
+	logger      ILogger
+	LogFormat   LogFormat
 }
 
 // newMuxRouter creates a new instance of MyRouter
-func newMuxRouter() *MuxRouter {
-	logger := glogger.NewLogger(os.Stdout, glogger.LogLevelInfo, false)
+func newMuxRouter(logger ILogger, format LogFormat) *MuxRouter {
 	return &MuxRouter{
-		mux:    http.NewServeMux(),
-		prefix: "",
-		logger: logger,
+		mux:       http.NewServeMux(),
+		prefix:    "",
+		logger:    logger,
+		LogFormat: format,
 	}
 }
 
@@ -62,7 +49,7 @@ func (r *MuxRouter) U(middlewares ...func(http.Handler) http.Handler) {
 }
 
 // M creates a new router with middleware
-func (r *MuxRouter) M(middlewares ...func(http.Handler) http.Handler) Router {
+func (r *MuxRouter) M(middlewares ...func(http.Handler) http.Handler) IRouter {
 	return &MuxRouter{
 		mux:         r.mux,
 		middlewares: append(r.middlewares, middlewares...),
@@ -90,40 +77,52 @@ func (r *MuxRouter) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	duration := time.Since(start)
 
 	statusColor := getColorForStatus(capturer.status)
-	methodColor := ColorCyan
-	pathColor := ColorGreen
-	timeColor := ColorMagenta
-	remoteAddrColor := ColorYellow
+	methodColor := colorCyan
+	pathColor := colorGreen
+	timeColor := colorMagenta
+	remoteAddrColor := colorYellow
 
-	// Log request details with colors
-	r.logger.Infof("%s | %s | %s | %s | %s",
-		colorize(statusColor, strconv.Itoa(capturer.status)),
-		colorize(methodColor, req.Method),
-		colorize(pathColor, req.URL.Path),
-		colorize(timeColor, formatResponseTime(duration)),
-		colorize(remoteAddrColor, strings.SplitN(req.RemoteAddr, ":", 2)[0]),
-	)
-}
+	host, _, _ := net.SplitHostPort(req.RemoteAddr)
+	reqPath := req.URL.Path
+	if req.URL.RawQuery != "" {
+		reqPath += "?" + req.URL.RawQuery
+	}
 
-func (r *MuxRouter) StartServer(srv *http.Server) {
-	gloader.NewWatcher(srv, time.Second, r.logger).Start()
+	if r.LogFormat == FormatColorized {
+		r.logger.LogHTTPRequest(LogLevelInfo, fmt.Sprintf("%s | %s | %s | %s | %s",
+			colorize(statusColor, strconv.Itoa(capturer.status)),
+			colorize(methodColor, req.Method),
+			colorize(pathColor, reqPath),
+			colorize(timeColor, formatResponseTime(duration)),
+			colorize(remoteAddrColor, host),
+		))
+	} else if r.LogFormat == FormatJSON {
+		logStruct := map[string]interface{}{
+			"status":        strconv.Itoa(capturer.status),
+			"method":        req.Method,
+			"path":          reqPath,
+			"response_time": formatResponseTime(duration),
+			"remote_addr":   host,
+		}
+		r.logger.LogHTTPRequest(LogLevelInfo, logStruct)
+	}
 }
 
 // getColorForStatus returns the color for the given HTTP status code
 func getColorForStatus(status int) string {
 	switch {
 	case status >= 200 && status < 300:
-		return ColorGreen // Success status code
+		return colorGreen // Success status code
 	case status >= 400 && status < 500:
-		return ColorYellow // Client error status code
+		return colorYellow // Client error status code
 	case status >= 500:
-		return ColorRed // Server error status code
+		return colorRed // Server error status code
 	default:
-		return ColorReset // Other status codes
+		return colorReset // Other status codes
 	}
 }
 
 // colorize adds color to a string
 func colorize(color, text string) string {
-	return fmt.Sprintf("%s%s%s", color, text, ColorReset)
+	return fmt.Sprintf("%s%s%s", color, text, colorReset)
 }

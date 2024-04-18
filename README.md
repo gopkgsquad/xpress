@@ -91,6 +91,11 @@ func main() {
 
     // Start the watcher for live reloading, first parameter is http.Server
     // and second parameter is frequency to check file changes
+    // here in NewWatcher you also pass 3rd param true/false to show log is
+    // coming from which file and line eg xpress.NewWatcher(srv, time.Second*2, false).Start()
+    // default value is true
+
+    // you can also call router.StartServer(srv) to start the application with live reaload - available in v1.0.8 or higher
     xpress.NewWatcher(srv, time.Second*2).Start()
 }
 ```
